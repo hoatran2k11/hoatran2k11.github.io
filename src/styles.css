@@ -1,0 +1,280 @@
+/* Bảng màu lấy theo video NYC về đêm: xanh navy sâu + vàng hổ phách + đỏ cam điểm nhấn */
+:root {
+  --navy-950: #050818;
+  --navy-800: #0d1636;
+  --blue: #5b7cff;
+  --amber: #ffb54a;
+  --orange: #ff8a3d;
+  --red: #ff4d5a;
+  --text: #f4f1ea;
+  --text-dim: rgba(244, 241, 234, 0.68);
+
+  --glass-bg: linear-gradient(145deg, rgba(255,255,255,0.14), rgba(255,255,255,0.05));
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-shadow: 0 20px 60px rgba(2, 4, 20, 0.55);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root { height: 100%; }
+
+body {
+  font-family: 'Outfit', system-ui, sans-serif;
+  color: var(--text);
+  background: var(--navy-950);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Nền video ---------- */
+.bg { position: fixed; inset: 0; z-index: 0; background: var(--navy-950); }
+.bg video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: saturate(1.1) contrast(1.05);
+}
+/* phủ nhẹ màu navy để chữ/kính dễ đọc, giữ ánh đèn vàng của thành phố */
+.bg-tint {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg, rgba(5,8,24,0.45) 0%, rgba(8,14,40,0.25) 45%, rgba(5,8,24,0.6) 100%);
+}
+.bg-vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(2,3,12,0.65) 100%);
+}
+
+/* ---------- Khung chính ---------- */
+.stage {
+  position: relative; z-index: 1;
+  height: 100vh; height: 100dvh; /* dvh: tránh bị thanh địa chỉ trình duyệt điện thoại che */
+  display: flex;
+  overflow-y: auto; /* màn hình thấp (xoay ngang) vẫn cuộn xem được hết card */
+  padding: 24px;
+}
+
+.card {
+  --gx: 50%; --gy: 50%;
+  position: relative;
+  margin: auto; /* căn giữa mà không bị cắt phần đầu khi nội dung cao hơn màn hình */
+  width: min(760px, 100%);
+  padding: 34px 36px 26px;
+  border-radius: 28px;
+  transform-style: preserve-3d;
+  transition: transform 0.18s ease-out;
+  will-change: transform;
+}
+
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.25);
+  backdrop-filter: blur(var(--blur, 22px)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--blur, 22px)) saturate(150%);
+}
+
+/* vệt sáng chạy theo chuột */
+.glare {
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--gx) var(--gy), rgba(255,200,120,0.18), transparent 55%);
+  mix-blend-mode: screen;
+}
+
+/* ---------- Header ---------- */
+.head { display: flex; align-items: center; gap: 22px; margin-bottom: 26px; transform: translateZ(30px); }
+
+.avatar-ring {
+  width: 108px; height: 108px; flex: none;
+  padding: 3px; border-radius: 50%;
+  background: conic-gradient(from 200deg, var(--amber), var(--orange), var(--red), var(--blue), var(--amber));
+  box-shadow: 0 0 30px rgba(255, 160, 70, 0.35);
+}
+.avatar-ring img, .avatar-ph {
+  width: 100%; height: 100%;
+  border-radius: 50%; object-fit: cover; display: block;
+  border: 3px solid var(--navy-800);
+  background: var(--navy-800);
+}
+
+.who h1 { font-size: 2.6rem; font-weight: 600; letter-spacing: 0.01em; line-height: 1.05; }
+.nick { margin-top: 4px; font-size: 1.05rem; font-weight: 500; letter-spacing: 0.04em; color: var(--amber); }
+.bio { margin-top: 6px; font-size: 1.05rem; color: var(--text-dim); font-weight: 300; letter-spacing: 0.02em; }
+
+/* ---------- Hàng thẻ con ---------- */
+.row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  margin-bottom: 26px;
+  transform: translateZ(20px);
+}
+.glass-sub {
+  display: flex; align-items: center; gap: 14px;
+  min-height: 84px; padding: 14px 16px;
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+  border: 1px solid rgba(255,255,255,0.16);
+  backdrop-filter: blur(var(--blur-sub, 10px));
+  -webkit-backdrop-filter: blur(var(--blur-sub, 10px));
+}
+.d-text { min-width: 0; flex: 1; }
+.d-name { font-weight: 600; font-size: 1.05rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.d-sub  { font-size: 0.85rem; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+
+.d-avatar { position: relative; width: 54px; height: 54px; flex: none; display: grid; place-items: center;
+  border-radius: 50%; background: rgba(255,255,255,0.1); font-size: 1.6rem; }
+.d-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.dot { position: absolute; right: -1px; bottom: -1px; width: 15px; height: 15px; border-radius: 50%;
+  border: 3px solid #1a2147; background: #80848e; }
+.dot.online { background: #23a55a; }
+.dot.idle   { background: #f0b232; }
+.dot.dnd    { background: #f23f43; }
+.d-logo { font-size: 1.3rem; color: #7d8cff; flex: none; }
+
+/* ---------- Trình phát nhạc nền (thu nhỏ) ---------- */
+.player { gap: 12px; }
+.p-art { width: 54px; height: 54px; border-radius: 12px; object-fit: cover; flex: none; background: rgba(255,255,255,0.08); }
+.p-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.p-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.p-title { font-weight: 600; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.p-ctrl { display: flex; align-items: center; gap: 4px; flex: none; }
+.p-ctrl button {
+  display: grid; place-items: center; width: 26px; height: 26px;
+  border: 0; background: transparent; color: var(--text-dim);
+  font-size: 0.8rem; cursor: pointer; border-radius: 8px;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.p-ctrl button:hover { color: #fff; background: rgba(255,255,255,0.12); }
+.p-ctrl button.play { width: 30px; height: 30px; font-size: 0.95rem; color: #fff; }
+
+.p-bar { display: flex; align-items: center; gap: 8px; font-size: 0.72rem; color: var(--text-dim); font-variant-numeric: tabular-nums; }
+.p-bar span { flex: none; }
+.p-bar input[type='range'] {
+  flex: 1; min-width: 0; height: 14px; margin: 0; cursor: pointer;
+  -webkit-appearance: none; appearance: none; background: transparent;
+}
+.p-bar input[type='range']::-webkit-slider-runnable-track {
+  height: 4px; border-radius: 4px;
+  background: linear-gradient(90deg, var(--amber) var(--pct, 0%), rgba(255,255,255,0.22) var(--pct, 0%));
+}
+.p-bar input[type='range']::-moz-range-track { height: 4px; border-radius: 4px; background: rgba(255,255,255,0.22); }
+.p-bar input[type='range']::-moz-range-progress { height: 4px; border-radius: 4px; background: var(--amber); }
+.p-bar input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 10px; height: 10px; margin-top: -3px; border-radius: 50%; border: 0; background: #fff;
+}
+.p-bar input[type='range']::-moz-range-thumb { width: 10px; height: 10px; border-radius: 50%; border: 0; background: #fff; }
+
+/* ---------- Mạng xã hội ---------- */
+.socials { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-bottom: 26px; transform: translateZ(40px); }
+.social {
+  width: 52px; height: 52px; display: grid; place-items: center;
+  border-radius: 16px; font-size: 1.4rem; color: #fff; text-decoration: none;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(var(--blur-sub, 8px));
+  -webkit-backdrop-filter: blur(var(--blur-sub, 8px));
+  /* không dùng transform khi hover để icon đứng yên, chỉ đổi màu/phát sáng */
+  transition: box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+.social:hover { border-color: rgba(255,255,255,0.4); }
+.social.facebook:hover   { background: #1877f2; box-shadow: 0 8px 24px rgba(24,119,242,0.55); }
+.social.instagram:hover  { background: linear-gradient(45deg,#f9a03c,#e1306c,#833ab4); box-shadow: 0 8px 24px rgba(225,48,108,0.5); }
+.social.spotify:hover    { background: #1db954; box-shadow: 0 8px 24px rgba(29,185,84,0.5); }
+.social.soundcloud:hover { background: #ff5500; box-shadow: 0 8px 24px rgba(255,85,0,0.55); }
+.social.discord:hover    { background: #5865f2; box-shadow: 0 8px 24px rgba(88,101,242,0.55); }
+
+/* ---------- Footer ---------- */
+.foot { display: flex; align-items: center; justify-content: flex-start; font-size: 0.95rem; color: var(--text-dim); transform: translateZ(10px); }
+.pin { display: inline-flex; align-items: center; gap: 6px; color: var(--amber); }
+.pin { color: var(--text); }
+.pin svg { color: var(--amber); }
+
+/* ---------- Màn hình chạm để vào ---------- */
+.gate {
+  position: fixed; inset: 0; z-index: 10;
+  display: grid; place-items: center;
+  cursor: pointer; user-select: none;
+  background: rgba(4, 6, 18, 0.88);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  transition: opacity 0.9s ease, visibility 0.9s ease, backdrop-filter 0.9s ease;
+}
+.gate span {
+  font-size: clamp(1.3rem, 2.6vw, 1.9rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-align: center;
+  padding: 0 24px;
+  animation: gatePulse 2.4s ease-in-out infinite;
+}
+.gate.gone { opacity: 0; visibility: hidden; pointer-events: none; backdrop-filter: blur(0); -webkit-backdrop-filter: blur(0); }
+
+@keyframes gatePulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+/* card hiện ra mượt sau khi vào */
+/* LƯU Ý: không animate opacity trên .stage – opacity < 1 ở phần tử cha làm backdrop-filter
+   của card bên trong không blur được cho tới khi opacity về 1 (gây lỗi "chớp" mất blur lúc vào).
+   Màn hình chờ (.gate) đã che phủ và tự mờ dần nên card chỉ cần hiện sẵn bên dưới. */
+.stage { transform: scale(0.97); transition: transform 0.9s ease 0.1s; }
+.stage.in { transform: none; }
+
+/* ---------- Nút bật/tắt tiếng ---------- */
+.mute-btn {
+  position: fixed; top: 18px; left: 18px; z-index: 5;
+  width: 48px; height: 48px; display: grid; place-items: center;
+  border-radius: 14px; font-size: 1.2rem; color: var(--text);
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.6s ease 0.6s, background 0.2s ease;
+}
+.mute-btn.show { opacity: 1; pointer-events: auto; }
+.mute-btn:hover { background: rgba(255,255,255,0.2); }
+
+/* ---------- Tắt blur (CONFIG.blur.enabled = false) ---------- */
+.no-blur .glass,
+.no-blur .glass-sub,
+.no-blur .social,
+.no-blur .mute-btn {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.no-blur .glass { background: linear-gradient(145deg, rgba(10,16,40,0.5), rgba(10,16,40,0.3)); }
+.no-blur .glass-sub { background: linear-gradient(145deg, rgba(255,255,255,0.14), rgba(255,255,255,0.06)); }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 640px) {
+  .card { padding: 24px 20px 20px; border-radius: 22px; }
+  .head { gap: 16px; }
+  .avatar-ring { width: 84px; height: 84px; }
+  .who h1 { font-size: 2rem; }
+  .row { grid-template-columns: 1fr; }
+}
+
+/* điện thoại nhỏ (≤ 380px) */
+@media (max-width: 380px) {
+  .stage { padding: 14px; }
+  .card { padding: 20px 16px 16px; }
+  .avatar-ring { width: 72px; height: 72px; }
+  .who h1 { font-size: 1.7rem; }
+  .socials { gap: 10px; }
+  .social { width: 46px; height: 46px; font-size: 1.25rem; border-radius: 14px; }
+}
+
+/* màn hình thấp / điện thoại xoay ngang */
+@media (max-height: 560px) {
+  .stage { padding: 12px; }
+  .card { padding: 18px 22px 16px; }
+  .head, .row, .socials { margin-bottom: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card { transition: none; }
+}
