@@ -18,7 +18,7 @@ export const CONFIG = {
 
   // ---- Video nền: đặt file vào public/bg.mp4 ----
   video: {
-    src: 'https://github.com/hoatran2k11/aoh2011.github.io/releases/download/vid/bg.mp4',
+    src: 'https://res.cloudinary.com/proqrhh8/video/upload/v1795444024/bg.mp4',
     // ảnh hiện trong lúc video đang tải (tuỳ chọn, đặt vào public/)
     poster: '',
   },
