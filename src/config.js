@@ -43,8 +43,8 @@ export const CONFIG = {
     tracks: [
       {
         src: 'bgm.mp3',
-        title: 'Moonlight - Spencer Hunt',
-        cover: 'cover.webp',
+        title: 'sunset - miroki',
+        cover: 'cover.png',
       },
     ],
   },
