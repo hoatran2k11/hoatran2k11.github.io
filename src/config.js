@@ -13,7 +13,7 @@ export const CONFIG = {
   // ---- Hiệu ứng blur (kính mờ): enabled true = có blur, false = trong suốt không blur ----
   blur: {
     enabled: true,
-    amount: 10, // độ mờ của card chính (px); các thẻ nhỏ tự lấy ~45% giá trị này
+    amount: 5, // độ mờ của card chính (px); các thẻ nhỏ tự lấy ~45% giá trị này
   },
 
   // ---- Video nền: đặt file vào public/bg.mp4 ----
